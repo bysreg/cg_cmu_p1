@@ -61,11 +61,8 @@ bool OpenglApplication::initialize()
     camera->pitch( -PI / 5.0 );
 
     // hacked-in scene (DO NOT CHANGE)
-#if _DEBUG && WIN32
-	mesh.filename = "../../models/pool.obj";
-#else
+
     mesh.filename = "models/pool.obj";
-#endif
     rv = rv && mesh.load();
 
     // copy vertices from loaded mesh
