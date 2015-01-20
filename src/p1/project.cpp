@@ -37,7 +37,6 @@ OpenglProject::~OpenglProject()
 }
 
 //data for rendering
-static GLuint meshVboId, meshIndexId, colorId;
 GLuint vertId, idxId;
 //---
 
@@ -68,17 +67,6 @@ bool OpenglProject::initialize( Camera* camera, Scene* scene )
 	GLfloat vertices[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
 	GLuint indices[] = { 0, 1, 2 };
 	//
-
-	//glGenBuffers(1, &meshVboId);
-	//glGenBuffers(1, &meshIndexId);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, meshVboId);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIndexId);
-
-	////glBufferData(GL_ARRAY_BUFFER, sizeof(this->scene.mesh.vertices) * this->scene.mesh.num_vertices, this->scene.mesh.vertices, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
-	////glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.mesh.triangles) * this->scene.mesh.num_triangles, this->scene.mesh.triangles, GL_STATIC_DRAW);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Create buffers
 	//glGenBuffers(1, &vertId);
@@ -122,20 +110,6 @@ void OpenglProject::render( const Camera* camera )
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, meshVboId);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIndexId);
-
-	////glVertexPointer(3, GL_FLOAT, 0, 0);
-	////glDrawElements(GL_TRIANGLES, scene.mesh.num_triangles * 3, GL_UNSIGNED_INT, 0);*/
-
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glVertexPointer(2, GL_FLOAT, 0, 0);
-	//glDrawElements(GL_TRIANGLES, 1, GL_UNSIGNED_INT, 0);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	//glDisableClientState(GL_VERTEX_ARRAY);
-	//glColor3f(0.0f, 0.0f, 1.0f);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
 
 	GLfloat colors[] = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
@@ -149,7 +123,6 @@ void OpenglProject::render( const Camera* camera )
 	glColorPointer(3, GL_FLOAT, 0, colors);
 	
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-	//glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices) / sizeof(GLfloat));
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
