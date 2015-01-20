@@ -38,6 +38,11 @@ OpenglProject::~OpenglProject()
 
 //data for rendering
 GLuint vertId, idxId;
+//data test
+GLfloat vertices[] = { 0.0, -1.0, 0.0, 1.0, 1.0, 1.0 };
+GLuint indices[] = { 0, 1, 2 };
+GLfloat colors[] = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+//
 //---
 
 /**
@@ -51,8 +56,6 @@ bool OpenglProject::initialize( Camera* camera, Scene* scene )
     // copy scene
     this->scene = *scene;
 
-	//TODO : should glut be inited here ?
-
 	glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 
 	GLenum err = glewInit();
@@ -63,20 +66,17 @@ bool OpenglProject::initialize( Camera* camera, Scene* scene )
 		return false;
 	}
 
-	//data test
-	GLfloat vertices[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
-	GLuint indices[] = { 0, 1, 2 };
-	//
-
 	// Create buffers
-	//glGenBuffers(1, &vertId);
+	glGenBuffers(1, &vertId);
 	glGenBuffers(1, &idxId);
-	//// Bind buffers to modify/render them
-	//glBindBuffer(GL_ARRAY_BUFFER, vertId);
+	// Bind buffers to modify/render them
+	glBindBuffer(GL_ARRAY_BUFFER, vertId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
-	//// Load data into buffers
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
+	// Load data into buffers
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
 
     return true;
 }
@@ -110,17 +110,14 @@ void OpenglProject::render( const Camera* camera )
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
-
-	GLfloat colors[] = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
-	GLfloat vertices[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
-	GLuint indices[] = { 0, 1, 2 };
-
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
-	glVertexPointer(2, GL_FLOAT, 0, vertices);
-	glColorPointer(3, GL_FLOAT, 0, colors);
+	glBindBuffer(GL_ARRAY_BUFFER, vertId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
+
+	glVertexPointer(2, GL_FLOAT, 0, 0);
+	glColorPointer(3, GL_FLOAT, 0, ((GLubyte*)NULL + sizeof(vertices)));
 	
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
