@@ -7,6 +7,7 @@
  */
 
 #include "p1/project.hpp"
+#include <stddef.h> 
 
 // use this header to include the OpenGL headers
 // DO NOT include gl.h or glu.h directly; it will not compile correctly.
@@ -37,12 +38,10 @@ OpenglProject::~OpenglProject()
 }
 
 //data for rendering
-GLuint vertId, idxId;
-//data test
-GLfloat vertices[] = { 0.0, -1.0, 0.0, 1.0, 1.0, 1.0 };
-GLuint indices[] = { 0, 1, 2 };
-GLfloat colors[] = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
-//
+GLuint meshVertId, meshIdxId;
+GLuint heightmapVertId, heightmapIdxId;
+Matrix4 meshWorldMat;
+Matrix4 heightmapWorldMat;
 //---
 
 /**
@@ -51,7 +50,7 @@ GLfloat colors[] = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f };
  * @param scene The scene to render.
  * @return true on success, false on error.
  */
-bool OpenglProject::initialize( Camera* camera, Scene* scene )
+bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int height)
 {
     // copy scene
     this->scene = *scene;
@@ -66,17 +65,30 @@ bool OpenglProject::initialize( Camera* camera, Scene* scene )
 		return false;
 	}
 
-	// Create buffers
-	glGenBuffers(1, &vertId);
-	glGenBuffers(1, &idxId);
+	meshWorldMat = Matrix4::Identity;
+	make_transformation_matrix(&meshWorldMat, scene->mesh_position.position, scene->mesh_position.orientation, scene->mesh_position.scale);
+
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(camera->get_fov_degrees(), camera->get_aspect_ratio(), camera->get_near_clip(), camera->get_far_clip());
+	glMatrixMode(GL_MODELVIEW);
+
+	// Create buffers for mesh
+	glGenBuffers(1, &meshVertId);
+	glGenBuffers(1, &meshIdxId);
 	// Bind buffers to modify/render them
-	glBindBuffer(GL_ARRAY_BUFFER, vertId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
+	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
 	// Load data into buffers
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(colors), NULL, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(colors), colors);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.mesh.triangles[0]) * this->scene.mesh.num_triangles, this->scene.mesh.triangles, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->scene.mesh.vertices[0]) * this->scene.mesh.num_vertices, this->scene.mesh.vertices, GL_STATIC_DRAW);
+
+	//create buffers for heightmap
+	glGenBuffers(1, &heightmapVertId);
+	glGenBuffers(1, &heightmapIdxId);
+
+
 
     return true;
 }
@@ -110,19 +122,29 @@ void OpenglProject::render( const Camera* camera )
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glEnableClientState(GL_COLOR_ARRAY);
+	using namespace std;
+
+	//matrix thingy
+	Vector3 cameraTarget = camera->get_position() + camera->get_direction();
+
+	cout << camera->get_position() << " || " /*<< camera->get_direction() << " || "*/ << camera->get_up() << endl;
+	cout << cameraTarget << endl;
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(camera->get_position().x, camera->get_position().y, camera->get_position().z, cameraTarget.x, cameraTarget.y, cameraTarget.z, camera->get_up().x, camera->get_up().y, camera->get_up().z);
+	glMultMatrixd(meshWorldMat.m);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, vertId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxId);
+	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
 
-	glVertexPointer(2, GL_FLOAT, 0, 0);
-	glColorPointer(3, GL_FLOAT, 0, ((GLubyte*)NULL + sizeof(vertices)));
+	glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
 	
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 3 * scene.mesh.num_triangles, GL_UNSIGNED_INT, 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 } /* _462 */

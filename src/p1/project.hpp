@@ -103,7 +103,7 @@ public:
 
     // Initialize the project, loading the mesh from the given filename.
     // Returns true on success.
-    bool initialize( Camera* camera, Scene* scene );
+    bool initialize( Camera* camera, Scene* scene, int width, int height );
     // Clean up the project, free any memory, etc.
     void destroy();
     // perform any updates

@@ -88,7 +88,7 @@ void CameraRoamControl::handle_event( const Application* app, const SDL_Event& e
         // enable rotation
         if ( event.button.button == SDL_BUTTON_LEFT )
             rotation = RPITCHYAW;
-        else if ( event.button.button == SDL_BUTTON_MIDDLE )
+        else if ( event.button.button == SDL_BUTTON_RIGHT ) // change this to right
             rotation = RROLL;
         break;
 
@@ -96,7 +96,7 @@ void CameraRoamControl::handle_event( const Application* app, const SDL_Event& e
         // disable rotation
         if ( event.button.button == SDL_BUTTON_LEFT && rotation == RPITCHYAW )
             rotation = RNONE;
-        else if ( event.button.button == SDL_BUTTON_MIDDLE && rotation == RROLL )
+        else if ( event.button.button == SDL_BUTTON_RIGHT && rotation == RROLL )
             rotation = RNONE;
         break;
 

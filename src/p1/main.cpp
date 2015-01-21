@@ -107,7 +107,7 @@ bool OpenglApplication::initialize()
     scene.heightmap_position.orientation = Quaternion( Vector3::UnitY, PI / 3.6 );
     scene.heightmap_position.scale = Vector3( 1.5, 0.5, 1.5 );
 
-    rv = rv &&  project.initialize( &camera_control.camera, &scene );
+    rv = rv &&  project.initialize( &camera_control.camera, &scene, WIDTH, HEIGHT);
 
     return rv;
 }
