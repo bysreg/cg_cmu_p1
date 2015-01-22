@@ -38,7 +38,7 @@ OpenglProject::~OpenglProject()
 }
 
 //data for rendering
-GLuint meshVertId, meshIdxId;
+GLuint meshVertId, meshIdxId, meshNormalId;
 GLuint heightmapVertId, heightmapIdxId;
 Matrix4 meshWorldMat;
 Matrix4 heightmapWorldMat;
@@ -65,6 +65,8 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 		return false;
 	}
 
+	GLfloat red[] = {1.0, 0.0, 0.0, 1.0};
+	GLfloat black[] = {0.0, 0.0, 0.0, 1.0};
 	meshWorldMat = Matrix4::Identity;
 	make_transformation_matrix(&meshWorldMat, scene->mesh_position.position, scene->mesh_position.orientation, scene->mesh_position.scale);
 
@@ -77,18 +79,32 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	// Create buffers for mesh
 	glGenBuffers(1, &meshVertId);
 	glGenBuffers(1, &meshIdxId);
-	// Bind buffers to modify/render them
+	glGenBuffers(1, &meshNormalId);
+	// Bind & Load buffers to modify/render them
 	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
-	// Load data into buffers
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.mesh.triangles[0]) * this->scene.mesh.num_triangles, this->scene.mesh.triangles, GL_STATIC_DRAW);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->scene.mesh.vertices[0]) * this->scene.mesh.num_vertices, this->scene.mesh.vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.mesh.triangles[0]) * this->scene.mesh.num_triangles, this->scene.mesh.triangles, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, meshNormalId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(this->scene.mesh.vertices[0]) * this->scene.mesh.num_vertices, this->scene.mesh.normals, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	//create buffers for heightmap
 	glGenBuffers(1, &heightmapVertId);
 	glGenBuffers(1, &heightmapIdxId);
 
+	//setting lights
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, red);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, black);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, black);
+	
 
+	glEnable(GL_DEPTH_TEST);
 
     return true;
 }
@@ -120,15 +136,15 @@ void OpenglProject::update( real_t dt )
  */
 void OpenglProject::render( const Camera* camera )
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	using namespace std;
 
 	//matrix thingy
 	Vector3 cameraTarget = camera->get_position() + camera->get_direction();
 
-	cout << camera->get_position() << " || " /*<< camera->get_direction() << " || "*/ << camera->get_up() << endl;
-	cout << cameraTarget << endl;
+	//cout << camera->get_position() << " || " /*<< camera->get_direction() << " || "*/ << camera->get_up() << endl;
+	//cout << cameraTarget << endl;
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -138,9 +154,13 @@ void OpenglProject::render( const Camera* camera )
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
-
 	glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, meshNormalId);
+	glNormalPointer(GL_DOUBLE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
 	
 	glDrawElements(GL_TRIANGLES, 3 * scene.mesh.num_triangles, GL_UNSIGNED_INT, 0);
 

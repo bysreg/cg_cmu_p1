@@ -70,8 +70,10 @@ bool OpenglApplication::initialize()
     scene.mesh.vertices = new Vector3[scene.mesh.num_vertices];
     scene.mesh.num_triangles = mesh.triangles.size();
     scene.mesh.triangles = new Triangle[scene.mesh.num_triangles];
+	scene.mesh.normals = new Vector3[scene.mesh.num_vertices];
     for ( size_t i = 0; i < scene.mesh.num_vertices; ++i ) {
         scene.mesh.vertices[i] = mesh.vertices[i].position;
+		scene.mesh.normals[i] = mesh.vertices[i].normal; // TODO : should i compute this myself??
     }
     for ( size_t i = 0; i < scene.mesh.num_triangles; ++i ) {
         for ( size_t j = 0; j < 3; ++j ) {

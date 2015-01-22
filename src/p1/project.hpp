@@ -46,6 +46,8 @@ struct MeshData
     Triangle* triangles;
     // size of triangle array
     size_t num_triangles;
+	// array of normals
+	Vector3* normals;
 };
 
 class Heightmap
