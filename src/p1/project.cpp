@@ -40,6 +40,7 @@ OpenglProject::~OpenglProject()
 //data for rendering
 GLuint meshVertId, meshIdxId, meshNormalId;
 GLuint heightmapVertId, heightmapIdxId;
+GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 }; // directional light
 Matrix4 meshWorldMat;
 Matrix4 heightmapWorldMat;
 //---
@@ -65,8 +66,13 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 		return false;
 	}
 
+	float k = 0.4f;
 	GLfloat red[] = {1.0, 0.0, 0.0, 1.0};
 	GLfloat black[] = {0.0, 0.0, 0.0, 1.0};
+	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat blue[] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat whitek[] = {k, k, k, 1.0};
+	GLfloat mat_shininess[] = { 5 };
 	meshWorldMat = Matrix4::Identity;
 	make_transformation_matrix(&meshWorldMat, scene->mesh_position.position, scene->mesh_position.orientation, scene->mesh_position.scale);
 
@@ -100,9 +106,12 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, red);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, black);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, black);
-	
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, whitek);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, whitek);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, whitek);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -149,9 +158,18 @@ void OpenglProject::render( const Camera* camera )
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(camera->get_position().x, camera->get_position().y, camera->get_position().z, cameraTarget.x, cameraTarget.y, cameraTarget.z, camera->get_up().x, camera->get_up().y, camera->get_up().z);
+	
+	//lighting
+	glPushMatrix();
+		glRotatef(PI / 4, 1.0, 0.0, 0.0);
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glPopMatrix();
+	//---
+
 	glMultMatrixd(meshWorldMat.m);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
 	glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
@@ -165,6 +183,7 @@ void OpenglProject::render( const Camera* camera )
 	glDrawElements(GL_TRIANGLES, 3 * scene.mesh.num_triangles, GL_UNSIGNED_INT, 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 } /* _462 */
