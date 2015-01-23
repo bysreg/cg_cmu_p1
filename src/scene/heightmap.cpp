@@ -10,12 +10,20 @@
 
 #include "scene/heightmap.hpp"
 
+static const int DETAIL = 100;
 
 namespace _462 {
 
-WaterSurface::WaterSurface() : current_time( 0 ) { }
+WaterSurface::WaterSurface() : current_time( 0 ) 
+{
+	num_Vertices = DETAIL * DETAIL;
+	vertices = new Vector3[num_Vertices];
+}
 
-WaterSurface::~WaterSurface() { }
+WaterSurface::~WaterSurface() 
+{ 
+	delete[] vertices;
+}
 
 real_t WaterSurface::compute_height( const Vector2& pos ) const
 {
@@ -37,6 +45,18 @@ real_t WaterSurface::compute_height( const Vector2& pos ) const
 void WaterSurface::update( real_t dt )
 {
     current_time += dt;
+
+	real_t inc = 2.0 / DETAIL;
+
+	for (int i = 0; i <= 2; i+=inc)
+	{
+		for (int j = 0; j <= 2; j+=inc)
+		{
+			//vertices[i*2 + j]
+		}
+	}
+
+	compute_height(Vector2::Zero);
 }
 
 

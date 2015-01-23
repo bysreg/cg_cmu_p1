@@ -39,7 +39,7 @@ OpenglProject::~OpenglProject()
 
 //data for rendering
 GLuint meshVertId, meshIdxId, meshNormalId;
-GLuint heightmapVertId, heightmapIdxId;
+GLuint heightmapVertId, heightmapIdxId, heightmapNormalId;
 GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 }; // directional light
 Matrix4 meshWorldMat;
 Matrix4 heightmapWorldMat;
@@ -75,6 +75,8 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	GLfloat mat_shininess[] = { 5 };
 	meshWorldMat = Matrix4::Identity;
 	make_transformation_matrix(&meshWorldMat, scene->mesh_position.position, scene->mesh_position.orientation, scene->mesh_position.scale);
+	heightmapWorldMat = Matrix4::Identity;
+	make_transformation_matrix(&heightmapWorldMat, scene->heightmap_position.position, scene->heightmap_position.orientation, scene->heightmap_position.scale);
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -101,6 +103,10 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	//create buffers for heightmap
 	glGenBuffers(1, &heightmapVertId);
 	glGenBuffers(1, &heightmapIdxId);
+	glGenBuffers(1, &heightmapNormalId);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, heightmapVertId);
+	//glBufferData(GL_ARRAY_BUFFER, )
 
 	//setting lights
 	glEnable(GL_LIGHTING);
