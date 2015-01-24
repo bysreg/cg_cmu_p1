@@ -55,11 +55,10 @@ class Heightmap
 public:
 	Vector3* vertices;
 	size_t num_Vertices;
-	unsigned int* indices;
-	size_t num_Indices;
 	size_t vertices_size; // in bytes
 	Vector3* normals;
-	size_t num_normals;
+	Triangle* triangles;
+	size_t num_triangles;
 
     virtual ~Heightmap() { }
     /**

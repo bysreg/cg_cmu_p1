@@ -55,9 +55,10 @@ namespace _462 {
 		//setup indices
 		size_t num_Square = (DETAIL - 1) * (DETAIL - 1);
 		int num_SquareCol = DETAIL - 1;
-		num_Indices = num_Square * 2 * 3;
 		int index = 0;
-		indices = new unsigned int[num_Indices];
+
+		num_triangles = num_Square * 2;
+		triangles = new Triangle[num_triangles];
 
 		//walk thru every squares
 		for (int i = 0; i < DETAIL - 1; i++)
@@ -70,23 +71,25 @@ namespace _462 {
 				uint right_bottom = left_bottom + 1;
 				uint right_top = left_top + 1;
 
-				indices[index++] = left_bottom;
-				indices[index++] = right_bottom;
-				indices[index++] = left_top;
-				indices[index++] = right_bottom;
-				indices[index++] = right_top;
-				indices[index++] = left_top;
+				triangles[index].vertices[0] = left_bottom;
+				triangles[index].vertices[1] = right_bottom;
+				triangles[index++].vertices[2] = left_top;
+
+				triangles[index].vertices[0] = right_bottom;
+				triangles[index].vertices[1] = right_top;
+				triangles[index++].vertices[2] = left_top;
 			}
 		}
 
 		//setup normals
-
+		normals = new Vector3[num_Vertices];
 	}
 
 	WaterSurface::~WaterSurface()
 	{
 		delete[] vertices;
-		delete[] indices;
+		delete[] normals;
+		delete[] triangles;
 	}
 
 	real_t WaterSurface::compute_height(const Vector2& pos) const
