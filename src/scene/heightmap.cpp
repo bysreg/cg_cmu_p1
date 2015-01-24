@@ -79,6 +79,8 @@ namespace _462 {
 			}
 		}
 
+		//setup normals
+
 	}
 
 	WaterSurface::~WaterSurface()

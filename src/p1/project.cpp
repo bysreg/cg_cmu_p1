@@ -99,7 +99,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 		unsigned int index1 = triangles[i].vertices[1];
 		unsigned int index2 = triangles[i].vertices[2];
 		
-		Vector3 surface_normal = cross(mesh_vertices[index1] - mesh_vertices[index0], mesh_vertices[index2] - mesh_vertices[index0]);
+		Vector3 surface_normal = normalize(cross(mesh_vertices[index1] - mesh_vertices[index0], mesh_vertices[index2] - mesh_vertices[index0]));
 		mesh_normals[index0] += surface_normal;
 		mesh_normals[index1] += surface_normal;
 		mesh_normals[index2] += surface_normal;
@@ -110,7 +110,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	//average all the surface normals
 	for (int i = 0; i < num_vertices; i++)
 	{
-		mesh_normals[i] /= num_triangles[i];
+		mesh_normals[i] = normalize(mesh_normals[i]);
 	}
 
 	// Create buffers for mesh
