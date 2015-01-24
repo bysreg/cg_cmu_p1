@@ -71,10 +71,11 @@ bool OpenglApplication::initialize()
     scene.mesh.num_triangles = mesh.triangles.size();
     scene.mesh.triangles = new Triangle[scene.mesh.num_triangles];
 	scene.mesh.normals = new Vector3[scene.mesh.num_vertices];
-    for ( size_t i = 0; i < scene.mesh.num_vertices; ++i ) {
+    for ( size_t i = 0; i < scene.mesh.num_vertices; ++i ) 
+	{
         scene.mesh.vertices[i] = mesh.vertices[i].position;
-		scene.mesh.normals[i] = mesh.vertices[i].normal; // TODO : should i compute this myself??
     }
+
     for ( size_t i = 0; i < scene.mesh.num_triangles; ++i ) {
         for ( size_t j = 0; j < 3; ++j ) {
             scene.mesh.triangles[i].vertices[j] = mesh.triangles[i].vertices[j];
@@ -119,6 +120,7 @@ void OpenglApplication::destroy()
     project.destroy();
     delete [] scene.mesh.vertices;
     delete [] scene.mesh.triangles;
+	delete [] scene.mesh.normals;
 }
 
 void OpenglApplication::update( real_t dt )

@@ -53,6 +53,14 @@ struct MeshData
 class Heightmap
 {
 public:
+	Vector3* vertices;
+	size_t num_Vertices;
+	unsigned int* indices;
+	size_t num_Indices;
+	size_t vertices_size; // in bytes
+	Vector3* normals;
+	size_t num_normals;
+
     virtual ~Heightmap() { }
     /**
      * Returns the height at the given position, where the position runs anywhere

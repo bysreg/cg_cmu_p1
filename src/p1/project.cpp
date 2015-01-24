@@ -7,7 +7,8 @@
  */
 
 #include "p1/project.hpp"
-#include <stddef.h> 
+#include <stddef.h>
+#include <algorithm>
 
 // use this header to include the OpenGL headers
 // DO NOT include gl.h or glu.h directly; it will not compile correctly.
@@ -84,6 +85,34 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	gluPerspective(camera->get_fov_degrees(), camera->get_aspect_ratio(), camera->get_near_clip(), camera->get_far_clip());
 	glMatrixMode(GL_MODELVIEW);
 
+	//setup normals for mesh
+	const Triangle* triangles = this->scene.mesh.triangles;
+	const Vector3* mesh_vertices = this->scene.mesh.vertices;
+	Vector3* mesh_normals = this->scene.mesh.normals;
+	size_t num_vertices = this->scene.mesh.num_vertices;
+	std::fill_n(mesh_normals, num_vertices, Vector3::Zero);
+	size_t* num_triangles = new size_t[num_vertices];
+	std::fill_n(num_triangles, num_vertices, 0);
+	for (int i = 0; i < this->scene.mesh.num_triangles; i++)
+	{
+		unsigned int index0 = triangles[i].vertices[0];
+		unsigned int index1 = triangles[i].vertices[1];
+		unsigned int index2 = triangles[i].vertices[2];
+		
+		Vector3 surface_normal = cross(mesh_vertices[index1] - mesh_vertices[index0], mesh_vertices[index2] - mesh_vertices[index0]);
+		mesh_normals[index0] += surface_normal;
+		mesh_normals[index1] += surface_normal;
+		mesh_normals[index2] += surface_normal;
+		++num_triangles[index0];
+		++num_triangles[index1];
+		++num_triangles[index2];
+	}
+	//average all the surface normals
+	for (int i = 0; i < num_vertices; i++)
+	{
+		mesh_normals[i] /= num_triangles[i];
+	}
+
 	// Create buffers for mesh
 	glGenBuffers(1, &meshVertId);
 	glGenBuffers(1, &meshIdxId);
@@ -95,7 +124,8 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.mesh.triangles[0]) * this->scene.mesh.num_triangles, this->scene.mesh.triangles, GL_STATIC_DRAW);
-	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, meshNormalId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(this->scene.mesh.vertices[0]) * this->scene.mesh.num_vertices, this->scene.mesh.normals, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -106,7 +136,12 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	glGenBuffers(1, &heightmapNormalId);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, heightmapVertId);
-	//glBufferData(GL_ARRAY_BUFFER, )
+	glBufferData(GL_ARRAY_BUFFER, this->scene.heightmap->vertices_size, this->scene.heightmap->vertices, GL_STREAM_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heightmapIdxId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(this->scene.heightmap->indices[0]) * this->scene.heightmap->num_Indices, this->scene.heightmap->indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//setting lights
 	glEnable(GL_LIGHTING);
@@ -167,29 +202,52 @@ void OpenglProject::render( const Camera* camera )
 	
 	//lighting
 	glPushMatrix();
-		glRotatef(PI / 4, 1.0, 0.0, 0.0);
+		glRotated(PI / 4, 1.0, 0.0, 0.0);
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	glPopMatrix();
 	//---
 
-	glMultMatrixd(meshWorldMat.m);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
-	glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, meshNormalId);
-	glNormalPointer(GL_DOUBLE, 0, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
+	//drawing mesh
+	glPushMatrix();
+		glMultMatrixd(meshWorldMat.m);
 	
-	glDrawElements(GL_TRIANGLES, 3 * scene.mesh.num_triangles, GL_UNSIGNED_INT, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, meshVertId);
+		glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, meshNormalId);
+		glNormalPointer(GL_DOUBLE, 0, 0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIdxId);
+	
+		glDrawElements(GL_TRIANGLES, 3 * scene.mesh.num_triangles, GL_UNSIGNED_INT, 0);
+	glPopMatrix();
+	//-------------
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	//drawing heightmap
+	glPushMatrix();
+		glMultMatrixd(heightmapWorldMat.m);
+
+		glBindBuffer(GL_ARRAY_BUFFER, heightmapVertId);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, scene.heightmap->vertices_size, scene.heightmap->vertices);
+		glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heightmapIdxId);
+
+		glDrawElements(GL_TRIANGLES, scene.heightmap->num_Indices, GL_UNSIGNED_INT, 0);
+	glPopMatrix();
+	//-------------
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	//glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 } /* _462 */

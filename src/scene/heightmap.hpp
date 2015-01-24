@@ -18,9 +18,6 @@ namespace _462 {
 class WaterSurface : public Heightmap
 {
 public:
-	Vector3* vertices;
-	size_t num_Vertices;
-
     /**
      * structure containing information about a wave-emitting point.
      */
