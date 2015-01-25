@@ -56,7 +56,7 @@ GLfloat water_shininess[] = {50};
 void compute_normals(Vector3* normals, const Vector3* vertices, size_t num_vertices, const Triangle* triangles, size_t num_triangles)
 {
 	std::fill_n(normals, num_vertices, Vector3::Zero);
-	for (int i = 0; i < num_triangles; i++)
+	for (size_t i = 0; i < num_triangles; i++)
 	{
 		unsigned int index0 = triangles[i].vertices[0];
 		unsigned int index1 = triangles[i].vertices[1];
@@ -68,7 +68,7 @@ void compute_normals(Vector3* normals, const Vector3* vertices, size_t num_verti
 		normals[index2] += surface_normal;
 	}
 	//average all the surface normals
-	for (int i = 0; i < num_vertices; i++)
+	for (size_t i = 0; i < num_vertices; i++)
 	{
 		normals[i] = normalize(normals[i]);
 	}
