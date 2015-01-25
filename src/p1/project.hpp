@@ -30,12 +30,6 @@ namespace _462 {
     - Color3 is defined in math/color.hpp
 */
 
-struct Triangle
-{
-    // index into vertex list of the 3 vertices of this triangle
-    unsigned int vertices[3];
-};
-
 struct MeshData
 {
     // array of vertices
@@ -54,7 +48,7 @@ class Heightmap
 {
 public:
 	Vector3* vertices;
-	size_t num_Vertices;
+	size_t num_vertices;
 	size_t vertices_size; // in bytes
 	Vector3* normals;
 	Triangle* triangles;

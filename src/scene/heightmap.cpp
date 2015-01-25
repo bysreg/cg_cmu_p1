@@ -16,9 +16,9 @@ namespace _462 {
 
 	WaterSurface::WaterSurface() : current_time(0)
 	{
-		num_Vertices = DETAIL * DETAIL;
-		vertices = new Vector3[num_Vertices];
-		vertices_size = sizeof(vertices[0]) * num_Vertices;
+		num_vertices = DETAIL * DETAIL;
+		vertices = new Vector3[num_vertices];
+		vertices_size = sizeof(vertices[0]) * num_vertices;
 		int min = -1;
 		int max = 1;
 		real_t inc = (max - min) / ((real_t)DETAIL);
@@ -82,7 +82,7 @@ namespace _462 {
 		}
 
 		//setup normals
-		normals = new Vector3[num_Vertices];
+		normals = new Vector3[num_vertices];
 	}
 
 	WaterSurface::~WaterSurface()
@@ -113,7 +113,7 @@ namespace _462 {
 	{
 		current_time += dt;
 
-		for (int i = 0; i < num_Vertices; i++)
+		for (int i = 0; i < num_vertices; i++)
 		{
 			vertices[i].z = compute_height(Vector2(vertices[i].x, vertices[i].y));
 		}

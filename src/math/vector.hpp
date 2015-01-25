@@ -16,6 +16,12 @@
 
 namespace _462 {
 
+struct Triangle
+{
+	// index into vertex list of the 3 vertices of this triangle
+	unsigned int vertices[3];
+};
+
 /*
 This file defines 3 different vector classes: 2D, 3D, and 4D.
 Each class overrides most sensible operators and have functions
