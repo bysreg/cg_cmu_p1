@@ -45,15 +45,12 @@ GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 }; // directional light
 Matrix4 meshWorldMat;
 Matrix4 heightmapWorldMat;
 
-float k = 0.4f;
 GLfloat red[] = { 1.0, 0.0, 0.0, 1.0 };
 GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
 GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
 GLfloat blue[] = { 0.0, 0.0, 1.0, 1.0 };
-GLfloat whitek[] = { k, k, k, 1.0 };
-GLfloat mat_shininess[] = { 5 };
-GLfloat water_shininess[] = {100};
-GLfloat water_specular[] = { k*2, k*2, k*2, 1.0 };
+GLfloat mesh_shininess[] = { 40 };
+GLfloat water_shininess[] = {50};
 //---
 
 void compute_normals(Vector3* normals, const Vector3* vertices, size_t num_vertices, const Triangle* triangles, size_t num_triangles)
@@ -99,11 +96,11 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	}
 
 	meshWorldMat = Matrix4::Identity;
-	make_transformation_matrix(&meshWorldMat, scene->mesh_position.position, scene->mesh_position.orientation, scene->mesh_position.scale);
+	make_transformation_matrix(&meshWorldMat, this->scene.mesh_position.position, this->scene.mesh_position.orientation, this->scene.mesh_position.scale);
 	heightmapWorldMat = Matrix4::Identity;
-	scene->heightmap_position.orientation = scene->heightmap_position.orientation * Quaternion(Vector3::UnitX, - PI / 2);
-	scene->heightmap_position.scale.y *= 3;
-	make_transformation_matrix(&heightmapWorldMat, scene->heightmap_position.position, scene->heightmap_position.orientation, scene->heightmap_position.scale);
+	this->scene.heightmap_position.orientation = scene->heightmap_position.orientation * Quaternion(Vector3::UnitX, -PI / 2);
+	this->scene.heightmap_position.scale = Vector3(1.5, 1.5, 1.5);
+	make_transformation_matrix(&heightmapWorldMat, this->scene.heightmap_position.position, this->scene.heightmap_position.orientation, this->scene.heightmap_position.scale);
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -152,11 +149,12 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, whitek);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, whitek);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_RESCALE_NORMAL);
 
     return true;
 }
@@ -215,8 +213,8 @@ void OpenglProject::render( const Camera* camera )
 	//set material
 	glMaterialfv(GL_FRONT, GL_AMBIENT, red);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, whitek);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mesh_shininess);
 
 	glPushMatrix();
 		glMultMatrixd(meshWorldMat.m);
@@ -237,38 +235,35 @@ void OpenglProject::render( const Camera* camera )
 	glDisableClientState(GL_NORMAL_ARRAY);
 	//-------------
 
-	//drawing heightmap
+	//draw height map
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
 	//set material
 	glMaterialfv(GL_FRONT, GL_AMBIENT, blue);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, whitek);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 	glMaterialfv(GL_FRONT, GL_SHININESS, water_shininess);
 
 	glPushMatrix();
-		glMultMatrixd(heightmapWorldMat.m);
+	glMultMatrixd(heightmapWorldMat.m);
 
-		glBindBuffer(GL_ARRAY_BUFFER, heightmapVertId);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, scene.heightmap->vertices_size, scene.heightmap->vertices);
-		glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, heightmapVertId);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, scene.heightmap->vertices_size, scene.heightmap->vertices);
+	glVertexPointer(3, GL_DOUBLE, offsetof(Vector3, x), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, heightmapNormalId);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, scene.heightmap->vertices_size, scene.heightmap->normals);
-		glNormalPointer(GL_DOUBLE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, heightmapNormalId);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, scene.heightmap->vertices_size, scene.heightmap->normals);
+	glNormalPointer(GL_DOUBLE, 0, 0);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heightmapIdxId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, heightmapIdxId);
 
-		glDrawElements(GL_TRIANGLES, 3 * scene.heightmap->num_triangles, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 3 * scene.heightmap->num_triangles, GL_UNSIGNED_INT, 0);
 	glPopMatrix();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
-	//-------------
-
-	
 }
 
 } /* _462 */

@@ -10,7 +10,7 @@
 
 #include "scene/heightmap.hpp"
 
-static const int DETAIL = 100;
+static const int DETAIL = 256;
 
 namespace _462 {
 
