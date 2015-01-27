@@ -1,8 +1,8 @@
 #pragma once
 
-#include "math\vector.hpp"
+#include "math/vector.hpp"
 #include "component.hpp"
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 namespace _462
 {

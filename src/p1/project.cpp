@@ -9,8 +9,9 @@
 #include "p1/project.hpp"
 #include <stddef.h>
 #include <algorithm>
-#include "application\gameobject.hpp"
-#include "application\meshrenderer.hpp"
+#include <cstring>
+#include "application/gameobject.hpp"
+#include "application/meshrenderer.hpp"
 
 // use this header to include the OpenGL headers
 // DO NOT include gl.h or glu.h directly; it will not compile correctly.

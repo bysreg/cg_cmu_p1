@@ -3,7 +3,7 @@ include_directories(
 	${SDL_INCLUDE_DIR}
 )
 add_executable(p1 main.cpp project.cpp)
-target_link_libraries(p1 math application scene ${SDL_LIBRARY} ${PNG_LIBRARIES}
+target_link_libraries(p1 application math scene ${SDL_LIBRARY} ${PNG_LIBRARIES}
 	${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES})
 
 if(APPLE)
