@@ -79,7 +79,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
     // copy scene
     this->scene = *scene;
 
-	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
