@@ -79,7 +79,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
     // copy scene
     this->scene = *scene;
 
-	glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
@@ -98,7 +98,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	GLfloat red[] = { 1.0, 0.0, 0.0, 1.0 };
 	GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
 	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat blue[] = { 0.0, 0.0, 1.0, 1.0 };
+	GLfloat blue[] = { 0.32, 0.64, 0.78, 1.0 };
 	GLfloat mesh_shininess[] = { 40 };
 	GLfloat water_shininess[] = { 50 };
 
@@ -128,7 +128,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 
 	water = new GameObject;
 	water->add_component<MeshRenderer>();
-	water->transform.transform(this->scene.heightmap_position.position, (this->scene.heightmap_position.orientation * Quaternion(Vector3::UnitX, -PI / 2)), Vector3(1.5, 1.5, 1.5));
+	water->transform.transform(this->scene.heightmap_position.position, (this->scene.heightmap_position.orientation * Quaternion(Vector3::UnitX, -PI / 2)), Vector3(1.5, 1.5, 0.5));
 	water->renderer->num_vertices = this->scene.heightmap->num_vertices;
 	water->renderer->num_triangles = this->scene.heightmap->num_triangles;
 	water->renderer->num_normals = this->scene.heightmap->num_vertices;
@@ -150,7 +150,7 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_RESCALE_NORMAL);
+	glEnable(GL_NORMALIZE);
 
     return true;
 }
