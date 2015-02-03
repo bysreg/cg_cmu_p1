@@ -1,6 +1,5 @@
 if(WIN32)
 	set(CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR}/../windows)
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FI\"${PROJECT_SOURCE_DIR}/application/memoryoperator.h\"")
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
