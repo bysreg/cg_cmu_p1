@@ -2,7 +2,7 @@
 
 #include "math/vector.hpp"
 #include "component.hpp"
-#include <GL/glew.h>
+#include "opengl.hpp"
 
 namespace _462
 {

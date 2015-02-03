@@ -3,3 +3,14 @@ Describe the required features you have implemented, and which you have not.
 if you have missing features, be sure to explain how much you accomplished.
 You should detail anything you think we need to know to understand your code.
 
+I implemented : 
+- VBO
+- Generate mesh for heightmap
+- Computer normals per vertex
+- Compute heightmap's vertices
+- add lights (ambient, diffuse, specular)
+
+I have implemented all the requirements
+
+I tried to structure my code similar to Unity3D. I used GameObject class, and it has list of components. Currently there are only two components. The components are Transform which store the position, rotation, and scale aka transformation matrix and MeshRenderer which store the mesh information such as vertices, normals, triangles, and color. 
+
