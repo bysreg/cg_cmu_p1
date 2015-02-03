@@ -5,4 +5,4 @@ include_directories(
     ${PNG_INCLUDE_DIRS}
 )
 
-add_library(application application.cpp camera_roam.cpp imageio.cpp gameobject.cpp component.cpp meshrenderer.cpp)
+add_library(application application.cpp camera_roam.cpp imageio.cpp gameobject.cpp component.cpp meshrenderer.cpp log.cpp)

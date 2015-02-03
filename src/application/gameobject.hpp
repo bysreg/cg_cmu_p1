@@ -55,6 +55,7 @@ namespace _462
 		void render();
 
 		explicit GameObject();
+		virtual ~GameObject();
 
 	private:
 		std::vector<Component*> components;

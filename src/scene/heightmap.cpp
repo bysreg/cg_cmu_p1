@@ -87,9 +87,7 @@ namespace _462 {
 
 	WaterSurface::~WaterSurface()
 	{
-		delete[] vertices;
-		delete[] normals;
-		delete[] triangles;
+		// dont delete vertices, normals, and triangles here. because those will be deleted inside the mesh renderer component
 	}
 
 	real_t WaterSurface::compute_height(const Vector2& pos) const

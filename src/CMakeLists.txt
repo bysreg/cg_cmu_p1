@@ -3,6 +3,7 @@ project(P1)
 
 include(build/CMakeLists.txt)
 
+add_subdirectory(memory)
 add_subdirectory(application)
 add_subdirectory(math)
 add_subdirectory(p1)

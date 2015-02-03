@@ -7,9 +7,11 @@
 
 #include "application/application.hpp"
 #include "application/camera_roam.hpp"
+#include "memory/memorymanager.h"
 #include "p1/project.hpp"
 #include "scene/mesh.hpp"
 #include "scene/heightmap.hpp"
+
 
 namespace _462 {
 
@@ -174,11 +176,24 @@ static void print_usage( const char* progname )
 
 int main( int argc, char* argv[] )
 {
-    // start a new application
-    OpenglApplication app;
-    if ( argc > 1 ) {
-        print_usage( argv[0] );
-        return 1;
-    }
-    return Application::start_application( &app, WIDTH, HEIGHT, FPS, TITLE );
+	// to scope variable app
+	{
+		// start a new application
+		OpenglApplication app;
+		if (argc > 1) {
+			print_usage(argv[0]);
+			return 1;
+		}
+		int app_retcode = Application::start_application(&app, WIDTH, HEIGHT, FPS, TITLE);
+
+		std::cout << "Application return code : " << app_retcode << std::endl;
+	}
+
+	_462::MemoryManager::GetInstance()->Dump();
+	printf("Press any key...\n");
+
+	char c = ' ';
+	scanf("%c", &c);
+
+	return 0;
 }
