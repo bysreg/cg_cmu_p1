@@ -1,8 +1,10 @@
 #include "memorymanager.h"
 #include "application/log.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
+using namespace std;
 using namespace _462;
 
 const unsigned long CHECK_CODE = 0X12345678;

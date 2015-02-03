@@ -24,7 +24,7 @@ namespace _462 {
 	do { if (BEY_LOG_TEST) std::cout << message << " (log invoked from : " << __FILE__ << ":" << __LINE__ <<  ")" << std::endl; } while (0)
 
 #define BEY_LOGF(format, ...)\
-	do { if (BEY_LOG_TEST) _462::Log(__FILE__, __LINE__, format, __VA_ARGS__); } while (0)
+	do { if (BEY_LOG_TEST) _462::Log(__FILE__, __LINE__, format, ## __VA_ARGS__); } while (0)
 
 //in wide char
 #define BEY_LOGW(message)\

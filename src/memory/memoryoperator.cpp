@@ -1,4 +1,6 @@
 #include "memorymanager.h"
+#include <cstddef>
+using namespace std;
 
 using namespace _462;
 
