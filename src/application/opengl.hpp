@@ -7,7 +7,7 @@
 #ifndef _462_OPENGL_HPP_
 #define _462_OPENGL_HPP_
 
-#include <GL/glew.h>
+#include "glew/GL/glew.h"
 #include "math/matrix.hpp"
 
 #ifdef _WIN32
