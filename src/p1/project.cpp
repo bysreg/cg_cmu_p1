@@ -96,7 +96,6 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	glMatrixMode(GL_MODELVIEW);
 
 	GLfloat red[] = { 1.0, 0.0, 0.0, 1.0 };
-	GLfloat black[] = { 0.0, 0.0, 0.0, 1.0 };
 	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
 	GLfloat blue[] = { 0.32, 0.64, 0.78, 1.0 };
 	GLfloat mesh_shininess[] = { 40 };
@@ -112,11 +111,11 @@ bool OpenglProject::initialize(Camera* camera, Scene* scene, int width, int heig
 	border->renderer->vertices = new Vector3[border->renderer->num_vertices];
 	border->renderer->normals = new Vector3[border->renderer->num_normals];
 	border->renderer->triangles = new Triangle[border->renderer->num_triangles];
-	for (int i = 0; i < border->renderer->num_vertices; i++)
+	for (size_t i = 0; i < border->renderer->num_vertices; i++)
 	{
 		border->renderer->vertices[i] = this->scene.mesh.vertices[i];
 	}
-	for (int i= 0; i < border->renderer->num_triangles; i++)
+	for (size_t i= 0; i < border->renderer->num_triangles; i++)
 	{
 		border->renderer->triangles[i] = this->scene.mesh.triangles[i];
 	}

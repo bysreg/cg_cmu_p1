@@ -111,7 +111,7 @@ namespace _462 {
 	{
 		current_time += dt;
 
-		for (int i = 0; i < num_vertices; i++)
+		for (size_t i = 0; i < num_vertices; i++)
 		{
 			vertices[i].z = compute_height(Vector2(vertices[i].x, vertices[i].y));
 		}

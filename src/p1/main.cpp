@@ -189,12 +189,14 @@ int main( int argc, char* argv[] )
 		std::cout << "Application return code : " << app_retcode << std::endl;
 	}
 
-/*
+//only turn on memory manager in windows, for now
+#ifdef _MSC_VER
 	_462::MemoryManager::GetInstance()->Dump();
 	printf("Press any key...\n");
 
 	char c = ' ';
 	scanf("%c", &c);
-*/
+#endif
+
 	return 0;
 }

@@ -5,6 +5,8 @@ using namespace std;
 using namespace _462;
 
 //new section
+//only turn on if using windows, visual c++ compiler
+#ifdef _MSC_VER
 void * operator new(size_t noBytes)
 {
 	return MemoryManager::GetInstance()->Alloc(noBytes, __FILE__, __LINE__);
@@ -24,6 +26,7 @@ void operator delete[](void * p)
 {
 	return MemoryManager::GetInstance()->Free(p);
 }
+#endif
 
 void * operator new(size_t noBytes, char * fileName, unsigned long line)
 {
