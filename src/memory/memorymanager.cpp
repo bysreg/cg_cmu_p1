@@ -79,7 +79,7 @@ void MemoryManager::Dump()
 {
 	unsigned long noTotalBytes = 0;
 
-	BEY_LOGF("\nStarting memory dump\n");	
+	BEY_LOG("\nStarting memory dump\n");	
 
 	for (unsigned int i = 0; i < m_noBuffers; i++)
 	{
@@ -87,14 +87,14 @@ void MemoryManager::Dump()
 			m_dataBuffers[i].fileName, m_dataBuffers[i].line);
 		noTotalBytes += m_dataBuffers[i].length;
 	}
-	BEY_LOGF("---------------------------\n");
+	BEY_LOG("---------------------------\n");
 	BEY_LOGF("Total: %d buffers, %d bytes\n", m_noBuffers, noTotalBytes);
 }
 
 void MemoryManager::SanityCheck(bool bShowStats)
 {
 	if (bShowStats)
-		BEY_LOGF("Sanity check start...\n");
+		BEY_LOG("Sanity check start...\n");
 
 	int count = 0;
 	for (unsigned int i = 0; i < m_noBuffers; i++)
@@ -111,7 +111,7 @@ void MemoryManager::SanityCheck(bool bShowStats)
 
 	if (bShowStats || count > 0)
 	{
-		BEY_LOGF("---------------------------\n");
+		BEY_LOG("---------------------------\n");
 		BEY_LOGF("Total: %d corrupted buffers\n", count);
 	}
 
@@ -123,6 +123,6 @@ void MemoryManager::SanityCheck(bool bShowStats)
 
 void MemoryManager::Error(char * szMessage)
 {
-	BEY_LOGF(szMessage);
+	BEY_LOG(szMessage);
 	std::cerr << "something went wrong : " << szMessage << std::endl;
 }
