@@ -14,3 +14,4 @@ I have implemented all the requirements
 
 I tried to structure my code similar to Unity3D. I used GameObject class, and it has list of components. Currently there are only two components. The components are Transform which store the position, rotation, and scale aka transformation matrix and MeshRenderer which store the mesh information such as vertices, normals, triangles, and color. 
 
+I override and overload operator new, new[], delete, and delete[]. it helps me detect where memory leaks are by showing the file and line number where it is new-ed. it also detects bad pointer deletion. I got it working in windows, but i still cant get it to work under linux. so for now, i will only turn it on in windows. 
