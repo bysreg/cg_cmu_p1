@@ -189,11 +189,12 @@ int main( int argc, char* argv[] )
 		std::cout << "Application return code : " << app_retcode << std::endl;
 	}
 
+/*
 	_462::MemoryManager::GetInstance()->Dump();
 	printf("Press any key...\n");
 
 	char c = ' ';
 	scanf("%c", &c);
-
+*/
 	return 0;
 }

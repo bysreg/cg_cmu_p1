@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 //new section
 void * operator new(size_t noBytes);
 void * operator new[](size_t noBytes);
